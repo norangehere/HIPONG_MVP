@@ -1,0 +1,1296 @@
+page { 
+  background: #fff; 
+  font-family: 'PingFang SC', sans-serif;
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* <-- 核心修改：从 min-height 改为 height */
+  overflow: hidden; /* <-- 增加这个，确保只有 scroll-view 滚动 */
+  background: #fff;
+  position: relative;
+}
+
+/* 2. 滑动容器：这个保持不变，您的设置是正确的 */
+.swipe-container {
+  flex: 1; /* 占据所有剩余空间 */
+  min-height: 0; /* flex 布局的防溢出技巧 */
+  position: relative;
+}
+
+/* 3. Swiper 和 Swiper-item：确保它们的高度是100%，并且【没有任何 min-height】 */
+.swiper, swiper-item {
+  height: 100%;
+}
+
+/* 4. 【重要】Scroll-view 的样式：这是让内容滚动的关键 */
+.step-content-scrollable {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* 5. 内容块：【移除 justify-content: center】，让内容从顶部开始自然排列 */
+.step-content {
+  padding: 40rpx 80rpx; /* 可以适当增加上下 padding */
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 确保这里没有 min-height 和 justify-content: center */
+  justify-content: flex-start; /* 让内容从顶部开始排列 */
+}
+
+
+
+/* 列表标题："已添加 (X人)" */
+.partner-list-title {
+  font-size: 32rpx;
+  font-weight: 600; /* 使用 600 来表示中等粗细 */
+  color: #333333;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #eeeeee; /* 使用更柔和的灰色分割线 */
+  margin-top: 40rpx; /* 与上方元素保持一些间距 */
+  margin-bottom: 10rpx;
+}
+
+/* 列表的整体容器 */
+.partner-list {
+  width: 100%;
+}
+
+/* 列表中的每一个同行者项目 */
+.partner-item {
+  display: flex;
+  align-items: center; /* 垂直居中对齐 */
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0; /* 项目之间的分割线 */
+  transition: background-color 0.2s; /* 添加一个背景色过渡效果 */
+}
+
+/* 当列表项被按下时的效果 (可选，提升体验) */
+.partner-item:active {
+  background-color: #fafafa;
+}
+
+/* 昵称输入框 */
+.partner-name-input {
+  /* 尺寸和边距 */
+  flex: 1.5; /* 分配 1.5 份空间 */
+  min-width: 0; /* 防止内容撑开 */
+  height: 64rpx;
+  line-height: 64rpx;
+  padding: 0 16rpx;
+  margin-right: 20rpx;
+
+  /* 字体 */
+  font-size: 28rpx;
+  color: #333;
+
+  /* 背景和边框 */
+  background-color: #f7f7f7;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  
+  /* 过渡效果 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 输入框获得焦点时的效果 */
+.partner-name-input:focus {
+  border-color: #007aff; /* 使用主题蓝色 */
+  background-color: #fff;
+  box-shadow: 0 0 0 4rpx rgba(0, 122, 255, 0.1); /* 添加一个柔和的光晕效果 */
+}
+
+/* 同行者地址文本 */
+.partner-address {
+  /* 尺寸和边距 */
+  flex: 3; /* 分配 3 份空间，让地址有更多位置 */
+  min-width: 0; /* 防止内容撑开 */
+  margin-right: 20rpx;
+
+  /* 字体 */
+  font-size: 26rpx;
+  color: #888888; /* 使用较深的灰色，易于阅读 */
+  line-height: 1.4;
+
+  /* 文本溢出处理 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* 强制不换行 */
+}
+
+/* 删除按钮 (这里我采用了之前推荐的【方案二：柔和胶囊样式】，因为它和输入框很搭) */
+.delete-btn {
+  /* 尺寸和边距 */
+  height: 52rpx;
+  line-height: 52rpx; /* 让文字垂直居中 */
+  padding: 0 24rpx;
+  margin: 0;
+  
+  /* 字体 */
+  font-size: 24rpx;
+  font-weight: normal;
+
+  /* 背景和边框 */
+  background-color: #fff;
+  border: 1rpx solid #e54d42; /* 主题红色边框 */
+  border-radius: 26rpx; /* 高度的一半，形成胶囊形状 */
+
+  /* 颜色 */
+  color: #e54d42; /* 主题红色文字 */
+
+  /* 去除按钮默认样式 */
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  
+  /* 动画过渡 */
+  transition: all 0.2s ease-in-out;
+}
+/* ==================================== */
+/*      同行者位置搜索区域的完整样式     */
+/* ==================================== */
+
+/* 整个搜索功能的外部容器 */
+.partner-search-container {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200rpx;
+    width: 100%;
+    max-width: 500rpx;
+  
+}
+
+.type-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  min-height: 400rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+/* 标题："通过搜索添加" (沿用之前的样式以保持统一) */
+.instr-title {
+  /* --- 核心修改 --- */
+  text-align: left; /* 确保文本内容本身是左对齐的 */
+  width: 100%;      /* 确保标题元素撑满其父容器，这样 text-align 才有意义 */
+
+  /* --- 你原有的样式 (保持不变) --- */
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+/* 包裹输入框和搜索按钮的容器 */
+.search-input-wrapper {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  width: 100%;
+}
+
+/* 搜索输入框 */
+.search-input {
+  flex: 1; /* 占据剩余的所有空间 */
+  height: 72rpx;
+  line-height: 72rpx;
+  padding: 0 24rpx;
+  margin-right: 16rpx; /* 与按钮隔开 */
+
+  font-size: 28rpx;
+  background-color: #ffffff;
+  border: 1rpx solid #ffffff;
+  border-radius: 8rpx;
+
+  /* 添加过渡效果，让交互更平滑 */
+  transition: all 0.2s ease-in-out;
+}
+
+/* 输入框获得焦点时的效果 */
+.search-input:focus {
+  border-color: #007aff; /* 边框变为主题蓝色 */
+  background-color: #fff;
+}
+
+/* 搜索按钮 (小程序自带 type="primary" 样式，这里主要调整边距) */
+.search-btn {
+  margin: 0; /* 清除默认外边距，确保 flex 布局对齐 */
+  padding: 0 30rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+}
+
+/* 搜索结果列表的容器 */
+.search-results-list {
+  margin-top: 20rpx;
+  border: 1rpx solid #eeeeee;
+  border-radius: 8rpx;
+  
+  /* 【关键】限制最大高度，超出部分可滚动 */
+  max-height: 450rpx; 
+  overflow-y: auto;
+}
+
+/* 搜索结果的每一项 */
+.result-item {
+  padding: 24rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s; /* 点击效果过渡 */
+}
+
+/* 移除最后一项的下边框 */
+.result-item:last-child {
+  border-bottom: none;
+}
+
+/* 列表项被点击时的效果 */
+.result-item:active {
+  background-color: #f5f5f5;
+}
+
+/* 结果中的地点名称 */
+.result-name {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500; /* 中等粗细 */
+  line-height: 1.3;
+}
+
+/* 结果中的地点地址 */
+.result-address {
+  font-size: 26rpx;
+  color: #999999; /* 使用灰色以作区分 */
+  margin-top: 8rpx;
+  line-height: 1.4;
+}
+/* 按钮按下的效果 */
+.delete-btn:active {
+  background-color: #fde8e8; /* 按下时添加淡红色背景 */
+  transform: scale(0.98); /* 轻微缩小效果 */
+}
+
+/* 当列表为空时显示的提示 */
+.empty-partners {
+  width: 100%;
+  text-align: center;
+  padding: 60rpx 0;
+  color: #aaaaaa; /* 使用浅灰色 */
+  font-size: 28rpx;
+}
+
+.search-section {
+  width: 100%;
+  max-width: 500rpx;
+  margin-bottom: 34rpx;
+};
+
+
+/* ... 你已有的样式 ... */
+
+/* 同行者搜索容器 */
+.partner-search-container {
+  margin-bottom: 20rpx;
+}
+
+/* 搜索框和按钮的包裹容器 */
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 10rpx;
+}
+
+
+
+
+/* 搜索结果列表 */
+.search-results-list {
+  margin-top: 16rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  max-height: 400rpx; /* 限制最大高度，超出则滚动 */
+  overflow-y: auto;
+}
+
+/* 搜索结果的每一项 */
+.result-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.result-address {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 分割线样式 */
+.divider {
+  height: 1rpx;
+  background-color: #e0e0e0;
+  margin: 30rpx 0;
+}
+
+/* 微调一下手动添加的按钮 */
+.add-partner-btn {
+  margin-top: 10rpx;
+  margin-bottom: 30rpx;
+}
+.search-input-container {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.12);
+  overflow: hidden;
+}
+
+
+
+
+.search-icon {
+  font-size: 28rpx;
+}
+
+.search-results {
+  margin-top: 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.12);
+  overflow: hidden;
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:active {
+  background-color: #f8f9fa;
+}
+
+.result-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.result-address {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+/* 步骤指示器 */
+.step-indicator {
+  background: #fff;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-dots {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background-image: conic-gradient(from 90deg at 50% 50%, #FDE7ED 0deg, #D9EAFF 215deg, #F5E8F1 326deg, #FDE7ED 360deg);
+  background-color: #FDE7ED;
+  box-shadow: 0 8rpx 8rpx rgba(0,0,0,.25);
+  border-radius: 20rpx;
+  transform: scale(1.2);
+}
+
+.step-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  display: block;
+}
+
+/* 进度条样式 */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  justify-content: center;
+}
+.progress-bar {
+  width: 200rpx;
+  height: 8rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-image: conic-gradient(from 90deg at 50% 50%, #FDE7ED 0deg, #D9EAFF 215deg, #F5E8F1 326deg, #FDE7ED 360deg);
+  background-color: #FDE7ED;
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+
+.step-content {
+  padding: 0rpx 120rpx; /* 左右留出导航按钮的空间 */
+  height: 100%;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 34rpx;
+  width: 100%;
+}
+
+.step-number {
+  width: 60rpx;
+  height: 60rpx;
+  background-image: conic-gradient(from 90deg at 50% 50%, #FDE7ED 0deg, #D9EAFF 215deg, #F5E8F1 326deg, #FDE7ED 360deg);
+  background-color: #FDE7ED;
+  box-shadow: 0 8rpx 8rpx rgba(0,0,0,.25);
+  border-radius: 20rpx;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
+}
+
+.step-label {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  margin-top: 30rpx;
+}
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  margin-top: 32rpx;
+  align-items: center;
+}
+/* 输入区域 */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200rpx;
+  width: 100%;
+  max-width: 500rpx;
+}
+
+.card-input {
+  width: 80%;
+  height: 80rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  border: 2rpx solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.card-input:focus-within {
+  border-color: #D9EAFF;
+  background: #fff;
+}
+
+.name-hint {
+  text-align: center;
+  margin-top: 34rpx;
+}
+
+/* 位置选择 */
+.location-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.location-display {
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+.location-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.location-address {
+  font-size: 28rpx;
+  color: #666;
+  display: block;
+}
+
+.map-hint {
+  text-align: center;
+  margin-top: 34rpx;
+}
+
+.hint-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 同行者区域 */
+.partners-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.partners-hint {
+  text-align: center;
+  margin-top: 34rpx;
+}
+
+/* 时间选择 */
+.time-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  min-height: 300rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  width: 100%;
+}
+
+.time-label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.picker-input {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 24rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.picker-arrow {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.time-hint {
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+
+/* 范围选择 */
+.range-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  min-height: 300rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.range-item {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  width: 100%;
+  align-items: center;
+}
+
+.range-label {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.slider {
+  width: 100%;
+  height: 8rpx;
+  border-radius: 4rpx;
+  outline: none;
+}
+
+.slider .wx-slider-track {
+  background: #FDE7ED !important;
+}
+
+.distance-hint {
+  text-align: center;
+  margin-top: 34rpx;
+}
+/* 预算选择 */
+.budget-section {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  min-height: 300rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.budget-range {
+  display: flex;
+  gap: 20rpx;
+  width: 100%;
+}
+
+.budget-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.budget-label {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.budget-ipt {
+  width: 100%;
+  height: 80rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  border: 2rpx solid #e0e0e0;
+  text-align: center;
+}
+
+.budget-unit {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 类型和偏好选择 */
+.type-section, .prefs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  min-height: 300rpx;
+  width: 100%;
+  max-width: 500rpx;
+  align-items: center;
+}
+
+.type-hint, .prefs-hint {
+  text-align: center;
+  margin-top: 34rpx;
+}
+
+/* 导航按钮 */
+.navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20rpx;
+  pointer-events: none;
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.nav-btn {
+  width: 60rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+  pointer-events: auto;
+  transition: all 0.3s ease;
+}
+
+.nav-btn.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.nav-arrow {
+  font-size: 32rpx;
+  color: #D9EAFF;
+  font-weight: bold;
+}
+
+/* 底部操作按钮 */
+.bottom-actions {
+  padding: 32rpx;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-generate {
+  width: 100%;
+  height: 96rpx;
+  background-image: conic-gradient(from 90deg at 50% 50%, #FDE7ED 0deg, #D9EAFF 215deg, #F5E8F1 326deg, #FDE7ED 360deg);
+  background-color: #FDE7ED;
+  box-shadow: 0 8rpx 8rpx rgba(0,0,0,.25);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-generate:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 8rpx rgba(0,0,0,.25);
+}
+
+.btn-generate.generating {
+  opacity: 0.8;
+  pointer-events: none;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 星星迸发动画 */
+.star-burst-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  font-size: 24rpx;
+  color: #FFD700;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 星星迸发动画 - 从按钮中心向外扩散 */
+.star-burst-1 {
+  animation: starBurst1 2s ease-out infinite;
+}
+
+.star-burst-2 {
+  animation: starBurst2 2s ease-out infinite;
+}
+
+.star-burst-3 {
+  animation: starBurst3 2s ease-out infinite;
+}
+
+.star-burst-4 {
+  animation: starBurst4 2s ease-out infinite;
+}
+
+.star-burst-5 {
+  animation: starBurst5 2s ease-out infinite;
+}
+
+.star-burst-6 {
+  animation: starBurst6 2s ease-out infinite;
+}
+
+.star-burst-7 {
+  animation: starBurst7 2s ease-out infinite;
+}
+
+.star-burst-8 {
+  animation: starBurst8 2s ease-out infinite;
+}
+
+/* 星星迸发关键帧动画 */
+@keyframes starBurst1 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(-30rpx, -100rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(-60rpx, -200rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst2 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(30rpx, -100rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(60rpx, -200rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst3 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(-60rpx, -120rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(-120rpx, -240rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst4 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(60rpx, -120rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(120rpx, -240rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst5 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(-90rpx, -80rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(-180rpx, -160rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst6 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(90rpx, -80rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(180rpx, -160rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst7 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(-15rpx, -140rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(-30rpx, -280rpx) scale(0.3);
+  }
+}
+
+@keyframes starBurst8 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(15rpx, -140rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(30rpx, -280rpx) scale(0.3);
+  }
+}
+
+.btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 顶部地图（保留原风格并加阴影） */
+/* 地图样式 */
+.mapbox {
+  width: 100%; 
+  max-width: 500rpx;
+  height: 400rpx; 
+  position: relative;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,.12);
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 40rpx;
+}
+
+.map { 
+  width: 100%; 
+  height: 100%; 
+}
+
+/* 地图控件 */
+.zoom {
+  display: flex;
+  flex-direction: row;
+  gap: 8rpx;
+}
+
+.zoom-btn {
+  width: 50rpx;
+  height: 50rpx;
+  background: #fff;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+}
+
+.location-btn {
+  width: 50rpx;
+  height: 50rpx;
+  background: #fff;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
+}
+
+/* 地图中心准星与确认按钮 */
+.map-center-pin {
+  position: absolute; z-index: 9;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 32rpx; height: 32rpx; border-radius: 50%;
+  border: 4rpx solid #056CEB; background: #fff;
+  box-shadow: 0 0 0 4rpx rgba(5,108,235,0.15);
+}
+.map-center-cta {
+  position: absolute; z-index: 9;
+  left: 50%; bottom: 24rpx; transform: translateX(-50%);
+  background:#fff; color:#333; border:1px solid #ddd; border-radius:16rpx;
+  box-shadow:0 4rpx 8rpx rgba(0,0,0,.12); padding: 0 20rpx; height:56rpx; line-height:56rpx;
+}
+
+/* 背景渐变层 */
+.bg-conic {
+  width: 100%; height: 3100rpx; position: absolute; left: 0; top: 842rpx;
+  background-image: conic-gradient(from 116deg at 61.07% 47.93%, rgba(216,234,255,0.40) 215deg, rgba(253,231,237,0.40) 340deg, rgba(253,231,237,0.40) 360deg);
+  background-color: rgba(216,234,255,0.25);
+}
+
+/* 新增：充满容器的背景图层 */
+.bg-image {
+  position: absolute;
+  inset: 0;                  /* 等同 top:0; right:0; bottom:0; left:0; */
+  z-index: 0;                /* 在最底层 */
+  background-image: url('assets/tab/渐变背景.png');  /* <-- 换成你的 png 路径 */
+  background-repeat: repeat-y;              /* 纵向平铺自动变长 */
+  background-size: 100% auto;               /* 宽度铺满，高度等比 */
+  background-position: top center;
+  pointer-events: none;       /* 防止遮挡点击 */
+}
+/* 标签与卡片：保留原风格 */
+.label {
+  position: absolute; left: 88rpx;
+  font-size: 32rpx; line-height: 48rpx; font-weight: 500; color: #000; z-index: 1;
+}
+
+
+
+/* 居中容器（日期、单行输入等） */
+.card-center { left: 50%; transform: translateX(-50%); }
+
+/* 两列卡片与“日期卡片”左右对齐 */
+.card-input.half {
+  width: 330rpx !important;   /* (688 - 28) / 2 */
+  height: 84rpx;
+  transform: none;
+}
+.card-input.half[style*="left"] {
+  left: calc(50% - 344rpx) !important;     /* 对齐日期左边缘 */
+  right: auto !important;
+}
+.card-input.half[style*="right"] {
+  left: calc(50% + 344rpx - 330rpx) !important;  /* 对齐日期右边缘 */
+  right: auto !important;
+}
+
+/* 输入/展示文字 */
+.clickable { cursor: pointer; }
+.ipt { width: 100%; font-size: 28rpx; }
+.value { color:#000; font-size:28rpx; }
+.ellipsis { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.picker-inner { width:100%; height:100%; display:flex; align-items:center; }
+
+/* 滑条：整行护栏 + 居中 688rpx 容器 */
+.slider-row {
+  position: absolute; left: 0; top : 10; width: 100%;
+}
+.slider-inner {
+  width: 100%; margin: 0 auto;
+}
+
+.slider { width: 100%; display:block; margin: 0 auto; }
+/* --- 个人偏好页面的新样式 --- */
+.prefs-instructions {
+  margin-bottom: 24rpx;
+}
+
+.prefs-examples {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 30rpx;
+  line-height: 1.6;
+}
+.example-item {
+  margin-top: 10rpx;
+  padding-left: 1em; /* 缩进 */
+}
+
+/* 多行文本输入框样式 */
+.prefs-textarea {
+  width: 100%;
+  min-height: 300rpx; /* 初始最小高度 */
+  padding: 20rpx;
+  font-size: 30rpx;
+  line-height: 1.6;
+  background-color: #ffffff;
+  border: 1rpx solid #ffffff;
+  border-radius: 16rpx;
+  box-sizing: border-box; /* 让 padding 不会撑大宽度 */
+}
+/* 同行者（保留你的风格） */
+.partner-item {
+  position: relative;
+  width: 100%;
+  height: 120rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.avatar { width:90rpx; height:90rpx; left:88rpx; position:absolute; background:#fff; border-radius:9999rpx; box-shadow:0 8rpx 8rpx rgba(0,0,0,.25); z-index:1; }
+.avatar-shadow { width:90rpx; height:90rpx; left:88rpx; position:absolute; background:#D9D9D9; border-radius:9999rpx; z-index:0; }
+.pname { position:absolute; left:200rpx; top: 25rpx; color:#000; font-size:32rpx; font-weight:500; line-height:48rpx; z-index:1; }
+.psub  { position:absolute; left:200rpx; top: 65rpx; color:#757575; font-size:24rpx; font-weight:500; line-height:36rpx; z-index:1; }
+
+/* 九宫格：三列均分，行内/行间留空隙 */
+.chip-row {
+  width: 688rpx;
+  height: 96rpx;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 24rpx; /* 添加行间距 */
+
+  /* 移除绝对定位相关属性 */
+}
+
+/* 为个人偏好部分添加特定样式 */
+.prefs-section .chip-row {
+  position: relative; /* 使用相对定位 */
+  left: auto;
+  transform: none;
+  z-index: 1;
+}
+
+/* 保持chip样式不变 */
+.chip {
+  width: calc((100% - 2 * 24rpx) / 3);
+  height: 72rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 8rpx rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #000;
+  font-weight: 500;
+  border: 4rpx solid transparent;
+  margin-right: 16rpx;  /* 设置右外边距，制造水平间隙 */
+}
+.chip-active {
+  border: 4rpx solid transparent;       /* 占位用 */
+  border-radius: 20rpx;                 /* 圆角 */
+  background:
+    linear-gradient(#fff, #fff) padding-box,                 /* 内层白底 */
+    linear-gradient(to right, #EE6F8F, #71B2FF) border-box;  /* 外层渐变边框 */
+}
+
+
+/* 模块级“自定义/更多”：右对齐到 688rpx 宽容器 */
+.row-688 {
+  position:absolute; left:50%; transform:translateX(-50%);
+  width:688rpx; height:32rpx; z-index:1;
+}
+.more { position:absolute; right:0; font-size:20rpx; color:#000; }
+
+.tiny { position:absolute; font-size:20rpx; color:#000; z-index:1; }
+
+/* 提交按钮 */
+.btn-recommend {
+  width: 470rpx; height: 84rpx; position: absolute; left: 50%; transform: translateX(-50%);
+  z-index: 1;
+  background-image: conic-gradient(from 90deg at 50% 50%, #FDE7ED 0deg, #D9EAFF 215deg, #F5E8F1 326deg, #FDE7ED 360deg);
+  background-color: #FDE7ED;
+  box-shadow: 0 8rpx 8rpx rgba(0,0,0,.25); border-radius: 20rpx;
+  display:flex; align-items:center; justify-content:center;
+}
+/* 新增：可拖动区域的样式 */
+.movable-area-fullscreen {
+  position: fixed;
+  inset: 0; /* 这等同于 top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  height: 100%;
+  z-index: 998; /* 比小人低一级，比页面内容高 */
+  pointer-events: none; /* 【关键】让区域本身不响应点击，这样才能点到下面的页面内容 */
+}
+
+/* 新增：可拖动视图的样式 */
+.movable-gif-view {
+  width: 200rpx;  /* 设置拖动块的宽度 */
+  height: 200rpx; /* 设置拖动块的高度 (通常和宽度一致) */
+  pointer-events: auto; /* 【关键】让这个视图可以响应用户的拖动操作 */
+}
+
+/* 修改：图片本身的样式 (不再需要定位) */
+.floating-gif-inner {
+  width: 100%; /* 图片宽度撑满父容器 movable-view */
+  height: 100%; /* 图片高度撑满父容器 movable-view */
+}
+
+.btn-text { font-size:32rpx; font-weight:600; color:#000; }

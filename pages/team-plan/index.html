@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>团建策划</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <main class="page">
+    <div class="bg-image" aria-hidden="true"></div>
+
+    <header class="page-header">
+      <button class="back-btn" id="backBtn" type="button">返回</button>
+      <div class="header-meta">
+        <h1 class="page-title">团建策划</h1>
+        <p class="page-subtitle">完善信息，生成团建方案</p>
+      </div>
+    </header>
+
+    <section class="step-indicator">
+      <div class="step-dots" id="stepDots"></div>
+      <div class="step-title" id="stepTitle">基本信息</div>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">33%</div>
+      </div>
+    </section>
+
+    <section class="step step-active" data-step="0">
+      <div class="card">
+        <div class="card-header">
+          <span class="step-number">1</span>
+          <span class="step-label">基本信息</span>
+        </div>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">计划名称</span>
+            <input class="field-input" id="planName" type="text" placeholder="例如：公司春游团建" />
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">开始日期</span>
+              <input class="field-input" id="startDate" type="date" />
+            </label>
+            <label class="field">
+              <span class="field-label">结束日期</span>
+              <input class="field-input" id="endDate" type="date" />
+            </label>
+          </div>
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">开始时间</span>
+              <input class="field-input" id="startTime" type="time" />
+            </label>
+            <label class="field">
+              <span class="field-label">结束时间</span>
+              <input class="field-input" id="endTime" type="time" />
+            </label>
+          </div>
+
+          <div class="budget-mode">
+            <span class="field-label">预算类型</span>
+            <div class="chip-row">
+              <button class="chip active" type="button" data-mode="percapita">人均预算</button>
+              <button class="chip" type="button" data-mode="total">总预算</button>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">预算最低</span>
+              <input class="field-input" id="budgetMin" type="number" min="0" placeholder="¥" />
+            </label>
+            <label class="field">
+              <span class="field-label">预算最高</span>
+              <input class="field-input" id="budgetMax" type="number" min="0" placeholder="¥" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field-label">参与人数</span>
+            <input class="field-input" id="peopleCount" type="number" min="1" placeholder="输入人数" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="1">
+      <div class="card">
+        <div class="card-header">
+          <span class="step-number">2</span>
+          <span class="step-label">地点设置</span>
+        </div>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">出发点名称</span>
+            <input class="field-input" id="originName" type="text" placeholder="例如：公司总部" />
+          </label>
+          <label class="field">
+            <span class="field-label">出发点地址</span>
+            <input class="field-input" id="originAddress" type="text" placeholder="输入详细地址" />
+          </label>
+          <div class="mapbox" aria-live="polite">
+            <div class="map-header">
+              <span class="map-title">地图选点</span>
+              <span class="map-subtitle">点击地图放置标记，拖动微调</span>
+            </div>
+            <div id="originMap" class="map" role="region" aria-label="地图选择出发点"></div>
+            <div class="map-hint">
+              <span>当前坐标</span>
+              <span class="map-coords" id="originCoords">30.27410, 120.15510</span>
+            </div>
+          </div>
+          <div class="range-group">
+            <div class="range-item">
+              <span class="range-label">距离范围（km）</span>
+              <input class="range-input" id="distanceRange" type="range" min="1" max="30" value="10" />
+              <span class="range-value" id="distanceValue">10</span>
+            </div>
+            <div class="range-item">
+              <span class="range-label">公共交通（分钟）</span>
+              <input class="range-input" id="transitRange" type="range" min="10" max="90" value="60" step="5" />
+              <span class="range-value" id="transitValue">60</span>
+            </div>
+            <div class="range-item">
+              <span class="range-label">打车时长（分钟）</span>
+              <input class="range-input" id="taxiRange" type="range" min="10" max="90" value="20" step="5" />
+              <span class="range-value" id="taxiValue">20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <div class="card">
+        <div class="card-header">
+          <span class="step-number">3</span>
+          <span class="step-label">个性化需求</span>
+        </div>
+        <label class="field">
+          <span class="field-label">备注</span>
+          <textarea class="field-textarea" id="otherNotes" rows="5" placeholder="例如：希望有户外拓展或适合拍照的场地"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <div class="navigation">
+      <button class="nav-btn" id="prevStepBtn" type="button">上一步</button>
+      <button class="nav-btn" id="nextStepBtn" type="button">下一步</button>
+    </div>
+
+    <div class="bottom-actions">
+      <button class="btn-generate" id="generateBtn" type="button">开始生成团建方案</button>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

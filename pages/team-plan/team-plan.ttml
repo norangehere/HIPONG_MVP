@@ -1,0 +1,308 @@
+
+<view class="page">
+  <!-- 背景图层（充满整个 .page，高度随内容增长） -->
+  <view class="bg-image"></view>
+  
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-dots">
+      <view class="dot {{currentStep === index ? 'active' : ''}}" 
+            tt:for="{{stepTitles}}" tt:key="index" tt:for-index="index">
+      </view>
+    </view>
+    <text class="step-title">{{stepTitles[currentStep]}}</text>
+    
+    <!-- 进度条 -->
+    <view class="progress-container">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progressPercentage}}%"></view>
+      </view>
+      <text class="progress-text">{{progressPercentage}}%</text>
+    </view>
+  </view>
+
+  <!-- 滑动容器 -->
+  <view class="swipe-container">
+    <swiper class="swiper" 
+            current="{{currentStep}}" 
+            bindchange="onSwiperChange"
+            disable-touch="{{false}}">
+      
+      <!-- 步骤1: 基本信息（计划名称、时间范围、预算范围） -->
+      <swiper-item>
+        <scroll-view scroll-y="true" class="step-content">
+        
+          <view class="step-header">
+            <text class="step-number">1</text>
+            <text class="step-label">基本信息</text>
+          </view>
+          
+          <!-- 计划名称 -->
+          <view class="input-section">
+            <view class="section-title">计划名称</view>
+            <view class="card-input">
+              <input class="ipt" 
+                     placeholder="请输入团建计划名称" 
+                     value="{{form.planName}}" 
+                     bindinput="onPlanNameInput" />
+            </view>
+          </view>
+
+          <!-- 游玩时间 -->
+          <view class="time-section">
+            <view class="section-title">游玩时间</view>
+            <view class="time-row">
+              <text class="time-label">开始日期</text>
+              <picker mode="date" value="{{form.startDate}}" bindchange="onStartDateChange">
+                <view class="picker-input">
+                  <text class="picker-text">{{form.startDate || '选择日期'}}</text>
+                  <text class="picker-arrow">></text>
+                </view>
+              </picker>
+            </view>
+            <view class="time-row">
+              <text class="time-label">结束日期</text>
+              <picker mode="date" value="{{form.endDate}}" bindchange="onEndDateChange">
+                <view class="picker-input">
+                  <text class="picker-text">{{form.endDate || '选择日期'}}</text>
+                  <text class="picker-arrow">></text>
+                </view>
+              </picker>
+            </view>
+            <view class="time-row">
+              <text class="time-label">{{form.startDate === form.endDate ? '开始时间' : '第一天开始时间'}}</text>
+              <picker mode="time" value="{{form.startTime}}" bindchange="onStartTimeChange">
+                <view class="picker-input">
+                  <text class="picker-text">{{form.startTime || '选择时间'}}</text>
+                  <text class="picker-arrow">></text>
+                </view>
+              </picker>
+            </view>
+            <view class="time-row">
+              <text class="time-label">{{form.startDate === form.endDate ? '结束时间' : '最后一天结束时间'}}</text>
+              <picker mode="time" value="{{form.endTime}}" bindchange="onEndTimeChange">
+                <view class="picker-input">
+                  <text class="picker-text">{{form.endTime || '选择时间'}}</text>
+                  <text class="picker-arrow">></text>
+                </view>
+              </picker>
+            </view>
+            <view class="time-hint">
+              <text class="hint-text">
+                {{form.startDate === form.endDate ? '' : '💡 多天活动，开始时间为第一天开始时间，结束时间为最后一天结束时间'}}
+              </text>
+            </view>
+          </view>
+
+          <!-- 预算区间 -->
+          <view class="budget-section">
+            <view class="section-title">预算区间</view>
+            <view class="budget-type">
+              <view class="chip {{form.budgetMode === 'percapita' ? 'active' : ''}}" 
+                    bindtap="onBudgetModeChange" data-mode="percapita">
+                <text class="chip-text">人均预算</text>
+              </view>
+              <view class="chip {{form.budgetMode === 'total' ? 'active' : ''}}" 
+                    bindtap="onBudgetModeChange" data-mode="total">
+                <text class="chip-text">总预算</text>
+              </view>
+            </view>
+            <view class="budget-range">
+              <view class="budget-input">
+                <text class="budget-label">最低</text>
+                <input class="budget-ipt" 
+                       type="number" 
+                       placeholder="0" 
+                       value="{{form.budgetMin}}" 
+                       bindinput="onBudgetMinInput" />
+                <text class="budget-unit">元</text>
+              </view>
+              <view class="budget-input">
+                <text class="budget-label">最高</text>
+                <input class="budget-ipt" 
+                       type="number" 
+                       placeholder="0" 
+                       value="{{form.budgetMax}}" 
+                       bindinput="onBudgetMaxInput" />
+                <text class="budget-unit">元</text>
+              </view>
+            </view>
+            <view class="people-input">
+              <text class="people-label">参与人数</text>
+              <input class="people-ipt" 
+                     type="number" 
+                     placeholder="请输入参与人数" 
+                     value="{{form.peopleCount}}" 
+                     bindinput="onPeopleCountInput" />
+              <text class="people-unit">人</text>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+      <!-- 步骤2: 地点设置（选择出发点、可接受范围） -->
+      <swiper-item>
+        <scroll-view scroll-y="true" class="step-content">
+          <view class="step-header">
+            <text class="step-number">2</text>
+            <text class="step-label">地点设置</text>
+          </view>
+          
+          <!-- 选择出发点 -->
+          <view class="location-section">
+            <view class="section-title">选择出发点</view>
+            
+            <!-- 搜索框 -->
+            <view class="search-section">
+              <view class="search-input-container">
+                <input class="search-input" 
+                       placeholder="搜索地点作为出发点" 
+                       value="{{searchKeyword}}" 
+                       bindinput="onSearchInput"
+                       bindconfirm="onSearchConfirm" />
+                <view class="search-btn" bindtap="onSearchConfirm">
+                  <text class="search-icon">🔍</text>
+                </view>
+              </view>
+              
+              <!-- 搜索结果列表 -->
+              <view class="search-results" tt:if="{{searchResults.length > 0}}">
+                <view class="search-result-item" 
+                      tt:for="{{searchResults}}" 
+                      tt:key="index" 
+                      tt:for-item="item" 
+                      tt:for-index="index"
+                      bindtap="onSelectSearchResult" 
+                      data-item="{{item}}">
+                  <text class="result-name">{{item.name}}</text>
+                  <text class="result-address">{{item.address}}</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 地图区域 -->
+            <view class="mapbox">
+              <map class="map" 
+                   longitude="{{form.origin.longitude}}" 
+                   latitude="{{form.origin.latitude}}"
+                   scale="16"
+                   markers="{{mapState.markers}}"
+                   bindmarkertap="onMarkerTap"
+                   bindtap="onMapTap">
+              </map>
+              
+              <!-- 地图控件 -->
+              <view class="map-controls">
+                <view class="zoom">
+                  <view class="zoom-btn" bindtap="zoomIn">+</view>
+                  <view class="zoom-btn" bindtap="zoomOut">-</view>
+                </view>
+                <view class="location-btn" bindtap="getCurrentLocation">📍</view>
+              </view>
+            </view>
+            
+            <!-- 位置信息显示 -->
+            <view class="location-display">
+              <text class="location-name">{{form.origin.name || '请选择出发点'}}</text>
+              <text class="location-address">{{form.origin.address || '点击地图选择位置'}}</text>
+            </view>
+          </view>
+
+          <!-- 可接受范围 -->
+          <view class="range-section">
+            <view class="section-title">地点距离范围</view>
+            <view class="range-item">
+              <text class="range-label">距离范围：{{form.distance}} km</text>
+              <slider class="slider" 
+                      min="0" max="30" step="1" value="{{form.distance}}"
+                      bindchanging="onDistanceChanging" bindchange="onDistanceChange" />
+            </view>
+            <view class="range-item">
+              <text class="range-label">公共交通：{{form.maxTransitTime}} 分钟</text>
+              <slider class="slider" 
+                      min="0" max="75" step="5" value="{{form.maxTransitTime}}"
+                      bindchange="onTransitChange" />
+            </view>
+            <view class="range-item">
+              <text class="range-label">打车时间：{{form.taxiTime}} 分钟</text>
+              <slider class="slider" 
+                      min="0" max="90" step="5" value="{{form.taxiTime}}"
+                      bindchange="onTaxiChange" />
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+      <!-- 步骤3: 个性化设置（团建类型选择、备注） -->
+      <swiper-item>
+        <scroll-view scroll-y="true" class="step-content-per">
+          <view class="step-header">
+            <text class="step-number">3</text>
+            <text class="step-label">个性化需求</text>
+          </view>
+            
+          <!-- 团建类型 -->
+          <view class="type-section">
+            <view class="notes-input">
+              <textarea class="notes-textarea" 
+                        placeholder="在这里输入独属于你的需求！eg:可以溜冰的商场，有蹦床的公园" 
+                        value="{{form.otherNotes}}" 
+                        bindinput="onOtherNotesInput"
+                        maxlength="500"></textarea>
+              <text class="notes-count">{{form.otherNotes.length}}/500</text>
+            </view>
+            <text class="hint-text">
+                💡 在对话框中输入你的任何个性化需求（可选）
+              </text>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+    </swiper>
+  </view>
+
+  <!-- 导航按钮 -->
+  <view class="navigation">
+    <view class="nav-btn {{currentStep === 0 ? 'disabled' : ''}}" 
+          bindtap="onPrevStep">
+      <text class="nav-arrow">‹</text>
+    </view>
+    <view class="nav-btn {{currentStep === stepTitles.length - 1 ? 'disabled' : ''}}" 
+          bindtap="onNextStep">
+      <text class="nav-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="bottom-actions">
+    <view class="btn-generate {{isGenerating ? 'generating' : ''}}" bindtap="onGeneratePlan">
+      <text class="btn-text"> {{generateButtonText}}</text>
+    </view>
+    
+    <!-- 星星迸发动画容器 -->
+    <view class="star-burst-container" tt:if="{{isGenerating}}">
+      <view class="star {{star.animation}}" 
+            tt:for="{{burstStars}}" 
+            tt:key="index" 
+            tt:for-item="star" 
+            tt:for-index="index"
+            style="animation-delay: {{star.delay}}s;">
+        ⭐
+      </view>
+    </view>
+  </view>
+   <movable-area class="movable-area-fullscreen">
+  
+    <!-- 可拖动的视图，这就是我们的小人容器 -->
+    <movable-view 
+      class="movable-gif-view" 
+      direction="all" 
+      x="{{gifX}}" 
+      y="{{gifY}}"
+    >
+      <!-- 你的图片现在放在可拖动视图的内部 -->
+      <image class="floating-gif-inner" src="https://pixe1ran9e.oss-cn-hangzhou.aliyuncs.com/GIF-unscreen.gif" mode="widthFix"></image>
+    </movable-view>
+    
+  </movable-area>
+</view>

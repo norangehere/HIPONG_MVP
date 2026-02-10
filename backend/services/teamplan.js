@@ -297,17 +297,14 @@ const calculatePlanBudget = (activities, peopleCount, hotelInfo = null) => {
 
   // 计算总人均花费（活动 + 酒店）
   const totalPerCapitaCost = totalCost + hotelCost;
-  const perCapitaCost =
-    activityCount > 0
-      ? Math.round(totalPerCapitaCost / activityCount)
-      : Math.round(hotelCost);
+  const perCapitaCost = Math.round(totalPerCapitaCost); // 修复：直接使用总人均花费
   const totalBudget = totalPerCapitaCost * peopleCount;
 
   console.log(`预算计算完成:`);
   console.log(`- 活动总花费: ${totalCost}元 (${activityCount}个活动)`);
   console.log(`- 酒店花费: ${hotelCost}元`);
   console.log(`- 总人均花费: ${totalPerCapitaCost}元`);
-  console.log(`- 人均预算: ${totalPerCapitaCost}元`);
+  console.log(`- 人均预算: ${perCapitaCost}元`);
   console.log(`- 总预算: ${totalBudget}元 (${peopleCount}人)`);
 
   return {
@@ -390,8 +387,7 @@ const buildActivitiesFromPlaces = (places, startMin, endMin, baseLocation) => {
   return usable.map((p, i) => {
     const s = startMin + i * slot;
     const e = Math.min(s + Math.min(120, slot), endMin);
-    const cost =
-      p.perCapitaCost || p.cost || p?.business?.cost || "暂无";
+    const cost = p.perCapitaCost || p.cost || p?.business?.cost || "暂无";
     return {
       id: p.id || `mock_${Date.now()}_${i}`,
       name: p.name || "活动地点",
@@ -414,10 +410,8 @@ const buildPlanFromPlaces = ({
   startLocation,
   startLocationCoords,
 }) => {
-  const startMin =
-    parseTimeToMinutes(timeRange?.start) ?? 9 * 60;
-  const endMin =
-    parseTimeToMinutes(timeRange?.end) ?? 18 * 60;
+  const startMin = parseTimeToMinutes(timeRange?.start) ?? 9 * 60;
+  const endMin = parseTimeToMinutes(timeRange?.end) ?? 18 * 60;
   const safeEndMin = endMin <= startMin + 120 ? startMin + 240 : endMin;
 
   const isMultiDay =
@@ -461,7 +455,11 @@ const buildPlanFromPlaces = ({
     description: "距离活动点较近，便于团队休息。",
   };
   const allActivities = days.flatMap((day) => day.activities);
-  const budgetInfo = calculatePlanBudget(allActivities, parseInt(people), hotel);
+  const budgetInfo = calculatePlanBudget(
+    allActivities,
+    parseInt(people),
+    hotel
+  );
   return {
     hotel,
     days,
@@ -477,10 +475,8 @@ const buildFallbackPlan = ({
   startLocation,
   startLocationCoords,
 }) => {
-  const startMin =
-    parseTimeToMinutes(timeRange?.start) ?? 9 * 60;
-  const endMin =
-    parseTimeToMinutes(timeRange?.end) ?? 18 * 60;
+  const startMin = parseTimeToMinutes(timeRange?.start) ?? 9 * 60;
+  const endMin = parseTimeToMinutes(timeRange?.end) ?? 18 * 60;
   const safeEndMin = endMin <= startMin + 120 ? startMin + 240 : endMin;
 
   const isMultiDay =
@@ -524,7 +520,11 @@ const buildFallbackPlan = ({
     description: "距离活动点较近，便于团队休息。",
   };
   const allActivities = days.flatMap((day) => day.activities);
-  const budgetInfo = calculatePlanBudget(allActivities, parseInt(people), hotel);
+  const budgetInfo = calculatePlanBudget(
+    allActivities,
+    parseInt(people),
+    hotel
+  );
   return {
     hotel,
     days,
@@ -804,13 +804,26 @@ const searchNearbyPlacesMultiCenter = async (
 
 /**
  * 生成次中心点 - 在主中心点周围创建多个搜索点
- * @param {string} centerLocation - 主中心点坐标, "经度,纬度"
+ * @param {string|object} centerLocation - 主中心点坐标, "经度,纬度" 或 {latitude, longitude} 对象
  * @param {number} distance - 距离（公里）
  * @param {number} count - 生成的中心点数量
  * @returns {Array<string>} - 次中心点坐标数组
  */
 const generateSubCenters = (centerLocation, distance, count) => {
-  const [lng, lat] = centerLocation.split(",").map(Number);
+  // 处理不同格式的坐标输入
+  let lng, lat;
+  if (typeof centerLocation === "string") {
+    [lng, lat] = centerLocation.split(",").map(Number);
+  } else if (
+    typeof centerLocation === "object" &&
+    centerLocation.latitude !== undefined
+  ) {
+    lng = centerLocation.longitude;
+    lat = centerLocation.latitude;
+  } else {
+    throw new Error("无效的坐标格式");
+  }
+
   const centers = [];
 
   for (let i = 0; i < count; i++) {

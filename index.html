@@ -1,0 +1,69 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>首页</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body data-base-url="">
+  <main class="page">
+    <section class="hero">
+      <button class="card card-big" id="startBtn" type="button">
+        <span class="card-title">一起碰面吧</span>
+        <span class="card-sub">邀请好友寻找最佳碰面点</span>
+        <img class="card-icon" src="https://pixe1ran9e.oss-cn-hangzhou.aliyuncs.com/ip.png" alt="" />
+      </button>
+
+      <div class="right-col">
+        <button class="card card-sm card-pink" id="teamPlanBtn" type="button">
+          <span class="card-title-sm">团建策划</span>
+          <span class="card-sub-sm">一键生成团建方案</span>
+          <img class="card-icon-sm" src="https://pixe1ran9e.oss-cn-hangzhou.aliyuncs.com/image%205.png" alt="" />
+        </button>
+
+        <button class="card card-sm card-yellow" id="socialMatchBtn" type="button">
+          <span class="card-title-sm">社交匹配</span>
+          <span class="card-sub-sm">加入组局/自己组局</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">团建高分方案推荐</h2>
+      <div class="hscroll" id="teamPlans" aria-label="团建高分方案推荐"></div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">猜你喜欢的组局</h2>
+      <div class="hscroll" id="likes" aria-label="猜你喜欢的组局"></div>
+    </section>
+
+    <img class="floating-gif" src="https://pixe1ran9e.oss-cn-hangzhou.aliyuncs.com/GIF-unscreen.gif" alt="" />
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal" id="socialModal" aria-hidden="true" hidden>
+    <div class="modal-mask" id="socialModalMask"></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="socialModalTitle">
+      <div class="modal-header">
+        <h3 class="modal-title" id="socialModalTitle">提示</h3>
+        <button class="modal-close" id="socialModalClose" type="button" aria-label="关闭">
+          <span class="close-text">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">社交匹配暂未实现，即将推出</p>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-primary" id="socialModalOk" type="button">
+          <span class="btn-text">我知道了</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>

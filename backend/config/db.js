@@ -15,8 +15,6 @@ try {
       connectionLimit: 10,
       queueLimit: 0,
       connectTimeout: 5000, // 5秒连接超时
-      acquireTimeout: 5000,
-      timeout: 30000,
     })
     .promise();
 

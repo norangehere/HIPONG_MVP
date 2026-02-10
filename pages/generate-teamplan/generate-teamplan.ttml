@@ -1,0 +1,127 @@
+<view class="page">
+  <view class="bg-conic"></view>
+
+  <view class="top-entry" bindtap="openFavorites">
+    <text class="top-entry-text">点击收藏此方案</text>
+  </view>
+
+  <block tt:if="{{generatedPlan}}">
+    <text class="main-title">您的团建方案</text>
+    <view class="plan-summary">
+      <text class="plan-title">{{generatedPlan.title}}</text>
+      
+      <!-- 预算信息显示 -->
+      <view class="budget-info">
+        <text class="budget-title">💰 预算信息</text>
+        <view class="budget-details">
+          <text class="budget-item">参与人数：{{planForm.peopleCount}}人</text>
+          <text class="budget-item">活动预算：{{generatedPlan.budgetInfo.perCapitaCost}}元/人</text>
+          <block tt:if="{{generatedPlan.budgetInfo.hotelCost > 0}}">
+            <text class="budget-item">酒店费用：{{generatedPlan.budgetInfo.hotelCost}}元/人</text>
+          </block>
+          <text class="budget-item">总预算：{{generatedPlan.budgetInfo.totalBudget}}元</text>
+        </view>
+      </view>
+      
+      <!-- 酒店信息（多天行程时显示） -->
+      <block tt:if="{{isMultiDay && hotelInfo}}">
+        <view class="hotel-section">
+          <text class="hotel-title">🏨 住宿安排</text>
+          <view class="hotel-info">
+            <text class="hotel-name">{{hotelInfo.name}}</text>
+            <text class="hotel-address">{{hotelInfo.address}}</text>
+            <text class="hotel-time">入住：{{hotelInfo.checkin}} | 退房：{{hotelInfo.checkout}}</text>
+            <text class="hotel-cost">总共花费: {{hotelInfo.cost}} </text>
+            <text class="hotel-desc">{{hotelInfo.description}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 多天行程的天标签 -->
+      <block tt:if="{{isMultiDay && dayTabs.length > 0}}">
+        <view class="day-tabs">
+          <view class="day-tab {{currentDayIndex === index ? 'active' : ''}}" 
+                tt:for="{{dayTabs}}" tt:key="day" tt:for-index="index"
+                data-index="{{index}}" bindtap="onDayTabChange">
+            <text class="day-tab-text">{{item.label}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 活动列表 -->
+      <view class="plan-activities">
+        <block tt:for="{{recoList}}" tt:key="id">
+          <view class="activity-item">
+            <view style="display: flex; align-items: baseline; margin-bottom: 8rpx;">
+              <text class="activity-time">{{item.time}}</text>
+              <text class="activity-name">{{item.name}}</text>
+            </view>
+            <block tt:if="{{item.photoUrl}}">
+              <image class="activity-image" src="{{item.photoUrl}}" mode="aspectFill" />
+            </block>
+            <view class="travel-options">
+              <text class="activity-desc" style="color: #3c89ff;">距离：</text>
+              <block tt:if="{{item.distance && item.distance !== '未知'}}">
+                <text class="travel-option">约 {{item.distance}}km</text>
+              </block>
+              <block tt:else>
+                <text class="travel-option">距离未知</text>
+              </block>
+            </view>
+            <text class="activity-desc">{{item.description}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="feedback-section">
+      <text class="section-title">不满意？告诉我们您的需求</text>
+      <view class="card-input">
+        <input class="ipt" placeholder="例如：预算太高/想增加户外活动" 
+               value="{{feedback}}" bindinput="onFeedbackInput" />
+      </view>
+      <view class="btn-recommend" bindtap="onRegenerate">
+        <text class="btn-text">重新调整方案</text>
+      </view>
+    </view>
+  </block>
+
+  <text class="main-title">目的地速览</text>
+  <scroll-view class="hscroll" scroll-x="true" show-scrollbar="false">
+    <view class="htrack">
+      <view class="card" tt:for="{{recoList}}" tt:key="id">        
+        <view class="card-body">
+          <view class="row">
+            <text class="name">{{item.name}}</text>
+            <view class="icon-like {{item.liked ? 'alt' : ''}}" 
+                  data-index="{{index}}" 
+                  bindtap="onFavoritePlace"></view>
+          </view>
+          <block tt:if="{{item.distance && item.distance !== '未知'}}">
+            <text class="meta">距离约 {{item.distance}}km</text>
+          </block>
+          <block tt:else>
+            <text class="meta">距离未知</text>
+          </block>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <text class="section-title">相似高分方案推荐</text>
+  <scroll-view class="hscroll" scroll-x="true" show-scrollbar="false">
+    <view class="htrack">
+      <view class="card" tt:for="{{similarList}}" tt:key="id">
+        <view class="card-body">
+          <view class="row">
+            <text class="name">{{item.name}}</text>
+            <view class="icon-like alt"></view>
+          </view>
+          <text class="meta">· 公共交通{{item.transit}}min</text>
+          <text class="meta">· 驾车{{item.drive}}min</text>
+          <text class="meta">· 人均￥{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

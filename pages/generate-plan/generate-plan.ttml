@@ -1,0 +1,99 @@
+<view class="page">
+  <!-- 背景渐变 -->
+  <view class="bg-conic"></view>
+
+  <!-- 分区一：推荐的目的地（横向滑动） -->
+  <text class="main-title">推荐的目的地</text>
+  <scroll-view class="hscroll" scroll-x="true" show-scrollbar="false">
+    <view class="htrack">
+      <view class="card" tt:for="{{recoList}}" tt:key="id">
+        <view class="pic">
+          <image tt:if="{{item.cover}}" class="reco-cover" src="{{item.cover}}" mode="aspectFill" lazy-load="true"></image>
+          <view tt:else class="pic-placeholder">
+            <text>暂无图片</text>
+          </view>
+        </view>
+        <view class="card-body">
+          <view class="row">
+            <text class="name">{{item.name}}</text>
+            <image
+              class="icon-like"
+              src="{{ item.liked ? '/assets/tab/like-fill.png' : '/assets/tab/like.png' }}"
+              mode="widthFix"
+              data-idx="{{index}}"
+              data-list-name="recoList"
+              bindtap="toggleLike"
+            />
+          </view>
+          <!-- 【优化】可以增加一个推荐理由的显示区域 -->
+          <text tt:if="{{item.reason}}" class="reason">💡 {{item.reason}}</text>
+          <text class="meta">· 公共交通{{item.transit}}min</text>
+          <text class="meta">· 驾车{{item.drive}}min</text>
+          <text class="meta">· 人均￥{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+  
+  </scroll-view>
+  <view class="chat-input-container {{isGenerating ? 'disabled' : ''}}">
+    <input 
+      class="chat-input"
+      type="text"
+      placeholder="不满意？可以说出你的想法..."
+      value="{{userInput}}"
+      bindinput="onInput"
+      confirm-type="send"
+      bindconfirm="refineRecommendations"
+      disabled="{{isGenerating}}"
+    />
+    <button 
+      class="send-button"
+      type="primary"
+      size="mini"
+      bindtap="refineRecommendations"
+      loading="{{isGenerating}}">
+      发送
+    </button>
+
+  </view>
+  <!-- 分区二：相似高分方案推荐（横向滑动） -->
+  <text class="section-title">相似高分方案推荐</text>
+  <scroll-view class="hscroll" scroll-x="true" show-scrollbar="false">
+    <view class="htrack">
+      <view class="card" tt:for="{{similarList}}" tt:key="id">
+        <view class="pic">
+          <image tt:if="{{item.cover}}" class="pic-img" src="{{item.cover}}" mode="aspectFill" lazy-load="true" />
+          <view tt:else class="pic-placeholder">
+            <text>暂无图片</text>
+          </view>
+        </view>
+        <view class="card-body">
+          <view class="row">
+            <text class="name">{{item.name}}</text>
+            <image
+              class="icon-like"
+              src="{{ item.liked ? '/assets/tab/like-fill.png' : '/assets/tab/like.png' }}"
+              mode="widthFix"
+              data-idx="{{index}}"
+              data-list-name="similarList"
+              bindtap="toggleLike"
+            />
+          </view>
+          <text class="meta">· 公共交通{{item.transit}}min</text>
+          <text class="meta">· 驾车{{item.drive}}min</text>
+          <text class="meta">· 人均￥{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 
+    ========================================================
+             ↓↓↓ 【核心新增】多轮对话输入区域 ↓↓↓
+    ========================================================
+  -->
+
+  <!-- 为了防止输入框遮挡底部内容，增加一个占位符 -->
+  <view class="input-placeholder"></view>
+
+</view>

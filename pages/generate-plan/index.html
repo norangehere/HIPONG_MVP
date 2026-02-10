@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>目的地推荐</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body data-base-url="">
+  <main class="page">
+    <div class="bg-conic" aria-hidden="true"></div>
+
+    <header class="page-header">
+      <button class="back-btn" id="backBtn" type="button">返回</button>
+      <h1 class="page-title">目的地推荐</h1>
+    </header>
+
+    <section class="section">
+      <h2 class="main-title">推荐的目的地</h2>
+      <div class="hscroll" id="recoList" aria-label="推荐的目的地"></div>
+    </section>
+
+    <section class="chat-section">
+      <div class="chat-input-container" id="chatInputContainer">
+        <input
+          class="chat-input"
+          id="chatInput"
+          type="text"
+          placeholder="不满意？可以说出你的想法..."
+          autocomplete="off"
+        />
+        <button class="send-button" id="sendBtn" type="button">发送</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">相似高分方案推荐</h2>
+      <div class="hscroll" id="similarList" aria-label="相似高分方案推荐"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>

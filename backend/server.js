@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 require("dotenv").config();
-const config = require("../config/config");
+const config = require("./config/config");
 const app = express();
 
 // 动态导入数据库，避免启动失败
@@ -54,7 +54,12 @@ const {
   generationStatus,
 } = require("./config/global");
 const PORT = config.PORT || 8080;
-app.use(cors());
+app.use(
+  cors({
+    origin: true, // 允许所有源
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // 获取客户端IP

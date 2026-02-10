@@ -1,0 +1,8 @@
+{
+    "navigationBarTitleText": "行程计划",
+    "disableSwipeBack": true,
+    "enablePullDownRefresh": false,
+    "navigationBarBackgroundColor": "#F0F7FF",
+    "navigationBarTextStyle": "black"
+  }
+  

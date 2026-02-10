@@ -1,0 +1,183 @@
+page { background:#fff; }
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: 24rpx;
+  padding-top: 66rpx;  /* 顶部标题空间 */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+/* ... 你页面中已有的样式 ... */
+
+.chat-input-container {
+  /* 布局和尺寸 */
+  display: flex;
+  align-items: center;
+  width: 100%; /* 宽度撑满 */
+  box-sizing: border-box; /* 让 padding 不会撑大宽度 */
+
+  /* 【核心修改】移除了 position: fixed, bottom, left, z-index */
+  
+  /* 内边距和外边距，让它和周围元素有呼吸空间 */
+  padding: 24rpx 32rpx; /* 上下24，左右32 */
+  margin-top: 20rpx; /* 与上方的滑动区域隔开 */
+  margin-bottom: 30rpx; /* 与下方的标题隔开 */
+  
+  /* 背景和边框 (可选，可以给它一个背景色让它更突出) */
+  background-color: #f9f9f9;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+  
+  /* 其他样式 */
+  transition: opacity 0.3s;
+}
+
+/* 当正在请求AI时，可以给一个禁用的外观 (保持不变) */
+.chat-input-container.disabled {
+  opacity: 0.7;
+}
+
+/* 输入框本身的样式 (保持不变或微调) */
+.chat-input {
+  flex: 1; 
+  height: 72rpx;
+  line-height: 72rpx;
+  background-color: #ffffff;
+  border-radius: 36rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+  border: 1rpx solid #ddd;
+}
+
+/* 发送按钮的样式 (保持不变) */
+.send-button {
+  margin: 0; 
+  padding: 0 30rpx;
+  line-height: 72rpx;
+  height: 72rpx;
+}
+
+/* 当正在请求AI时，可以给一个禁用的外观 */
+.chat-input-container.disabled {
+  opacity: 0.7;
+}
+
+.chat-input {
+  flex: 1; /* 占据剩余所有空间 */
+  height: 72rpx;
+  line-height: 72rpx; /* 确保文字垂直居中 */
+  background-color: #ffffff;
+  border-radius: 36rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  margin-right: 16rpx;
+  border: 1rpx solid #ddd;
+}
+
+.send-button {
+  margin: 0; /* 去除按钮默认的外边距 */
+  padding: 0 30rpx;
+  line-height: 72rpx;
+  height: 72rpx;
+}
+
+/* 新增一个占位符的样式 */
+/* 它的高度约等于输入框的高度，防止页面最底部的内容被输入框遮挡 */
+.input-placeholder {
+  height: 120rpx; 
+}
+
+/* 【可选优化】为推荐理由添加样式 */
+.reason {
+  font-size: 24rpx;
+  color: #ff7f50; /* 珊瑚色，比较醒目 */
+  margin-top: 8rpx;
+  display: block; /* 让它单独占一行 */
+  white-space: normal;
+}
+/* 背景：与你之前一致的扇形渐变（透明度 0.30） */
+.bg-conic {
+  position: absolute; left: 0; top: 0; width: 100%; height: 1800rpx;
+  background-image: conic-gradient(
+    from 116deg at 61.07% 47.93%,
+    rgba(216,234,255,0.30) 215deg,
+    rgba(253,231,237,0.30) 340deg,
+    rgba(253,231,237,0.30) 360deg
+  );
+  z-index: 0;
+}
+
+/* 标题 */
+.main-title {
+  position: relative; z-index: 1;
+  margin-left: 9rpx;
+  font-size: 34rpx; line-height: 50rpx; color: #000; font-weight: 600;
+}
+
+/* 二级标题与上方模块的距离拉大 */
+.section-title {
+  position: relative; z-index: 1;
+  margin-top: 70rpx;
+  margin-left: 9rpx;
+  font-size: 34rpx; line-height: 50rpx; color: #000; font-weight: 600;
+}
+/* 标题与其下横滑列表之间的间距 */
+.section-title + .hscroll { margin-top: 30rpx; }
+
+/* 横向滑动容器 */
+.hscroll {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  padding-left: 20rpx;
+  margin-bottom: 60rpx;
+}
+.htrack {
+  display: inline-flex;
+  gap: 20rpx;
+  padding: 6rpx 6rpx 6rpx 9rpx;
+}
+
+/* 卡片规格 */
+.card {
+  width: 360rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 12rpx rgba(0,0,0,.20);
+  overflow: hidden;
+}
+
+/* 上部图片占位 */
+.pic {
+  width: 100%;
+  height: 320rpx;
+  background: #D9D9D9;
+  border-top-left-radius: 20rpx;
+  border-top-right-radius: 20rpx;
+  overflow: hidden;
+}
+.pic-img { width: 100%; height: 100%; display: block; }
+
+/* 文案 */
+.card-body { padding: 18rpx; }
+.row { display: flex; align-items: center; }
+.name {
+  font-size: 32rpx; line-height: 48rpx; color: #000; font-weight: 600;
+}
+
+/* ♥ 图标：使用 PNG，不再用背景色。保持尺寸与对齐 */
+.icon-like {
+  width: 32rpx;
+  height: 32rpx;
+  margin-left: auto;
+  display: block;          /* 让 <image> 占位更稳定 */
+  border-radius: 6rpx;     /* 如 PNG 需要圆角裁切，可保留；否则可删除 */
+  overflow: hidden;
+}
+
+.meta {
+  display: block;
+  font-size: 24rpx; line-height: 36rpx; color: #757575; font-weight: 500;
+  margin-top: 4rpx;
+}

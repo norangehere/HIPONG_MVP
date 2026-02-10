@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>团建方案</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body data-base-url="">
+    <main class="page">
+      <header class="header">
+        <button id="backBtn" type="button" class="back-btn">←</button>
+        <h1 class="title">团建方案</h1>
+        <button id="regenerateBtn" type="button" class="regenerate-btn">
+          重新生成
+        </button>
+      </header>
+
+      <div class="content">
+        <div id="planSummary" class="plan-summary"></div>
+
+        <div class="section">
+          <h2>快速选择</h2>
+          <div id="quickList" class="card-list"></div>
+        </div>
+
+        <div class="section">
+          <h2>相似方案</h2>
+          <div id="similarList" class="card-list"></div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast"></div>
+    </main>
+
+    <script>
+      // 状态管理
+      const state = {
+        form: null,
+        generatedPlan: null,
+        quickList: [],
+        similarList: [],
+        isGenerating: false,
+      };
+
+      // DOM元素缓存
+      const els = {
+        backBtn: null,
+        regenerateBtn: null,
+        planSummary: null,
+        quickList: null,
+        similarList: null,
+        toast: null,
+      };
+
+      let toastTimer = null;
+
+      // 初始化
+      function init() {
+        cacheElements();
+        bindEvents();
+        loadStoredPlan();
+        if (state.generatedPlan) {
+          syncActivitiesFromPlan();
+          renderPlanSummary();
+          renderQuickList();
+        } else {
+          showToast("暂无方案数据");
+        }
+      }
+
+      function cacheElements() {
+        els.backBtn = document.getElementById("backBtn");
+        els.regenerateBtn = document.getElementById("regenerateBtn");
+        els.planSummary = document.getElementById("planSummary");
+        els.quickList = document.getElementById("quickList");
+        els.similarList = document.getElementById("similarList");
+        els.toast = document.getElementById("toast");
+      }
+
+      function bindEvents() {
+        if (els.backBtn) {
+          els.backBtn.addEventListener("click", () => {
+            window.location.href = "../team-plan/index.html";
+          });
+        }
+
+        if (els.regenerateBtn) {
+          els.regenerateBtn.addEventListener("click", handleRegenerate);
+        }
+      }
+
+      // 从localStorage加载方案数据
+      function loadStoredPlan() {
+        const raw = localStorage.getItem("lastTeamPlanForm");
+        if (!raw) return;
+
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed?.form) {
+            state.form = parsed.form;
+            state.generatedPlan = parsed.generatedPlan || null;
+          } else if (parsed) {
+            state.form = parsed;
+          }
+        } catch (error) {
+          console.warn("解析方案数据失败:", error);
+        }
+      }
+
+      // 从方案数据同步活动列表
+      function syncActivitiesFromPlan() {
+        const plan = state.generatedPlan;
+        if (!plan) return;
+
+        // 处理多日或多活动结构
+        if (plan.days && Array.isArray(plan.days)) {
+          // 如果是多日结构，合并所有活动
+          state.activities = plan.days.flatMap((day) =>
+            (day.activities || []).map((activity) => ({
+              ...activity,
+              day: day.day,
+            }))
+          );
+        } else if (plan.activities && Array.isArray(plan.activities)) {
+          // 如果是单日结构
+          state.activities = plan.activities.map((activity) => ({
+            ...activity,
+            day: activity.day || 1,
+          }));
+        } else {
+          state.activities = [];
+        }
+
+        // 设置快速选择列表
+        state.quickList = state.activities
+          .slice(0, 4)
+          .map((activity, index) => ({
+            id: `q${index + 1}`,
+            name: activity.name || "活动地点",
+            distance: activity.distance || "-",
+            liked: false,
+          }));
+
+        state.similarList = [
+          {
+            id: "s1",
+            name: "西湖风景区",
+            transit: 40,
+            drive: 18,
+            price: 120,
+            liked: false,
+          },
+          {
+            id: "s2",
+            name: "千岛湖",
+            transit: 55,
+            drive: 25,
+            price: 98,
+            liked: false,
+          },
+          {
+            id: "s3",
+            name: "宋城",
+            transit: 60,
+            drive: 35,
+            price: 160,
+            liked: false,
+          },
+          {
+            id: "s4",
+            name: "灵隐寺",
+            transit: 45,
+            drive: 22,
+            price: 110,
+            liked: false,
+          },
+        ];
+      }
+
+      // 渲染方案摘要
+      function renderPlanSummary() {
+        if (!els.planSummary || !state.generatedPlan) return;
+
+        const plan = state.generatedPlan;
+        const title = plan.name || "团建方案";
+
+        // 预算信息
+        const budgetInfo = plan.budgetInfo
+          ? {
+              peopleCount: state.form?.people || 4,
+              perCapitaCost: plan.budgetInfo.perCapitaCost || "-",
+              hotelCost: plan.budgetInfo.hotelCost || 0,
+              totalBudget: plan.budgetInfo.totalBudget || "-",
+            }
+          : null;
+
+        // 住宿信息
+        const hotelHtml = plan.hotel
+          ? `
+        <div class="hotel-info">
+          <h3>住宿安排</h3>
+          <p>${plan.hotel.name || "精选酒店"}</p>
+          <p>价格：${plan.hotel.cost || "-"} 元/晚</p>
+        </div>
+      `
+          : "";
+
+        // 活动列表
+        const activitiesHtml =
+          state.activities
+            ?.map(
+              (activity, index) => `
+        <div class="activity-item">
+          <div class="activity-header">
+            <span class="activity-day">第${activity.day || index + 1}天</span>
+            <span class="activity-time">${activity.time || "-"}</span>
+          </div>
+          <div class="activity-content">
+            <h4>${activity.name || "活动地点"}</h4>
+            <p>${activity.description || "团建活动"}</p>
+          </div>
+        </div>
+      `
+            )
+            .join("") || "<p>暂无活动安排</p>";
+
+        els.planSummary.innerHTML = `
+        <div class="plan-title">${title}</div>
+        ${
+          budgetInfo
+            ? `
+          <div class="budget-info">
+            <div class="budget-title">预算信息</div>
+            <div class="budget-item">参与人数：${
+              budgetInfo.peopleCount
+            } 人</div>
+            <div class="budget-item">人均预算：${
+              budgetInfo.perCapitaCost
+            } 元 / 人</div>
+            ${
+              budgetInfo.hotelCost > 0
+                ? `<div class="budget-item">住宿费用：${budgetInfo.hotelCost} 元 / 人</div>`
+                : ""
+            }
+            <div class="budget-item">总预算：${budgetInfo.totalBudget} 元</div>
+          </div>
+        `
+            : ""
+        }
+        ${hotelHtml}
+        <div class="activities">
+          <h3>活动安排</h3>
+          ${activitiesHtml}
+        </div>
+      `;
+      }
+
+      // 渲染快速选择列表
+      function renderQuickList() {
+        if (!els.quickList) return;
+
+        els.quickList.innerHTML = "";
+        state.quickList.forEach((item, index) => {
+          els.quickList.appendChild(createQuickCard(item, index));
+        });
+      }
+
+      // 创建快速选择卡片
+      function createQuickCard(item, index) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = item.name || "目的地";
+
+        const likeBtn = document.createElement("button");
+        likeBtn.className = `icon-like${item.liked ? " liked" : ""}`;
+        likeBtn.type = "button";
+        likeBtn.textContent = "♥";
+        likeBtn.dataset.index = index;
+        likeBtn.dataset.list = "quick";
+
+        row.appendChild(name);
+        row.appendChild(likeBtn);
+
+        const meta = document.createElement("span");
+        meta.className = "meta";
+        meta.textContent = `距离约 ${item.distance || "-"} km`;
+
+        body.appendChild(row);
+        body.appendChild(meta);
+        card.appendChild(body);
+        return card;
+      }
+
+      // 重新生成方案
+      function handleRegenerate() {
+        if (state.isGenerating) return;
+
+        localStorage.removeItem("lastTeamPlanForm");
+        window.location.href = "../team-plan/index.html";
+      }
+
+      // 显示Toast提示
+      function showToast(message) {
+        if (!els.toast) return;
+        els.toast.textContent = message;
+        els.toast.classList.add("show");
+
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+        }
+
+        toastTimer = setTimeout(() => {
+          els.toast.classList.remove("show");
+        }, 2000);
+      }
+
+      // 页面加载完成后初始化
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

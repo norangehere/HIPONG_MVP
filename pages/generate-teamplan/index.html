@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>团建方案</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body data-base-url="">
+  <main class="page">
+    <div class="bg-conic" aria-hidden="true"></div>
+
+    <header class="page-header">
+      <button class="back-btn" id="backBtn" type="button">返回</button>
+      <h1 class="page-title">团建方案</h1>
+    </header>
+
+    <button class="top-entry" id="favoritePlanBtn" type="button">点击收藏此方案</button>
+
+    <section class="plan-section">
+      <h2 class="main-title">您的团建方案</h2>
+      <div class="plan-summary" id="planSummary"></div>
+    </section>
+
+    <section class="feedback-section">
+      <h2 class="section-title">不满意？告诉我们您的需求</h2>
+      <div class="card-input">
+        <input class="ipt" id="feedbackInput" type="text" placeholder="例如：预算太高，想增加户外活动" />
+      </div>
+      <button class="btn-recommend" id="regenerateBtn" type="button">重新调整方案</button>
+    </section>
+
+    <section class="section">
+      <h2 class="main-title">目的地速览</h2>
+      <div class="hscroll" id="quickList" aria-label="目的地速览"></div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">相似高分方案推荐</h2>
+      <div class="hscroll" id="similarList" aria-label="相似高分方案推荐"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="index.js"></script>
+</body>
+</html>
